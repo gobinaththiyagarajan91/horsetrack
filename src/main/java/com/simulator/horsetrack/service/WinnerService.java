@@ -3,20 +3,39 @@ package com.simulator.horsetrack.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class WinnerService {
 
     @Value("#{${horse.index}}")
-    LinkedHashMap<Integer, String> horseIndex;
+    private LinkedHashMap<Integer, String> horseIndex;
 
     @Value("#{${horse.odds}}")
-    Map<String, Integer> horseOdds;
+    private Map<String, Integer> horseOdds;
 
     @Value("#{${horse.winner.status}}")
-    Map<String, String> winnerStatus;
+    private Map<String, String> winnerStatusConstant;
+
+    private Map<String, String> winnerStatus;
+
+    private String previousWinner;
+
+    @PostConstruct
+    private void init(){
+        winnerStatus = new HashMap<>();
+        winnerStatus.putAll(winnerStatusConstant);
+
+        winnerStatus.entrySet().forEach(a->{
+            if("won".equals(winnerStatus.get(a.getKey()))){
+                previousWinner = a.getKey();
+            }
+        });
+    }
 
     public LinkedHashMap<Integer, String> getHorseIndex() {
         return horseIndex;
@@ -28,6 +47,25 @@ public class WinnerService {
 
     public Map<String, String> getWinnerStatus() {
         return winnerStatus;
+    }
+
+    public void setPreviousWinner(String previousWinner) {
+        this.previousWinner = previousWinner;
+    }
+
+    public void setWinner(int index){
+        if(index >0 && index<horseIndex.size()){
+            String horseName = horseIndex.get(index);
+            winnerStatus.put(horseName,"won");
+            System.out.println("previousWinner "+previousWinner);
+            if(Objects.nonNull(previousWinner)){
+                winnerStatus.put(previousWinner,"lost");
+            }
+            previousWinner = horseName;
+        }else{
+            System.out.println("Invalid Horse Number: "+index);
+        }
+
     }
 
 

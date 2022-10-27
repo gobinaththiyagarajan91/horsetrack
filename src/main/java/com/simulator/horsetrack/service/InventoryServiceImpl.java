@@ -2,6 +2,8 @@ package com.simulator.horsetrack.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,9 +15,10 @@ public class InventoryServiceImpl {
 
     LinkedHashMap<String, Integer> denominationInventory;
 
-    public void initializeInventory() {
+    @PostConstruct
+    private void init(){
         denominationInventory = new LinkedHashMap<>();
-        denominationInventory.putAll(denominationInventoryConstant);
+        restockInventory();
     }
 
     public void restockInventory() {

@@ -3,10 +3,10 @@ package com.simulator.horsetrack.service;
 import com.simulator.horsetrack.constants.InputTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -22,16 +22,15 @@ public class HorseTrackService implements SimulationService {
     private WinnerService winnerService;
 
     @Override
-    public void startSimulation() {
-
-        inventoryService.initializeInventory();
+    public void startTrack() {
 
        while(true){
            printIntialContext();
            String userInput = scanner.nextLine();
            String inputType = inputValidation(userInput);
            if(InputTypes.WINNER.name().equalsIgnoreCase(inputType)){
-               System.out.println(InputTypes.WINNER.name());
+               int index=extractWinnerIndex(userInput);
+               winnerService.setWinner(index);
            }else if(InputTypes.WAGER.name().equalsIgnoreCase(inputType)){
                System.out.println(InputTypes.WAGER.name());
            }else if(InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)){
@@ -80,4 +79,16 @@ public class HorseTrackService implements SimulationService {
         return "";
 
     }
+
+    public int extractWinnerIndex(String userInput){
+        int index = 0;
+        Matcher matcher = Pattern.compile("\\d+").matcher(userInput);
+        while(matcher.find()){
+          index  = index+Integer.parseInt(matcher.group());
+        }
+        System.out.println("userInput "+userInput);
+        System.out.println("Index "+index );
+        return index;
+    }
+
 }
