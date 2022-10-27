@@ -2,7 +2,6 @@ package com.simulator.horsetrack.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.Map;

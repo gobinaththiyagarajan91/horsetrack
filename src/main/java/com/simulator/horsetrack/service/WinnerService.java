@@ -29,7 +29,6 @@ public class WinnerService {
     private void init(){
         winnerStatus = new HashMap<>();
         winnerStatus.putAll(winnerStatusConstant);
-
         winnerStatus.entrySet().forEach(a->{
             if("won".equals(winnerStatus.get(a.getKey()))){
                 previousWinner = a.getKey();
@@ -53,11 +52,14 @@ public class WinnerService {
         this.previousWinner = previousWinner;
     }
 
+    public String getPreviousWinner() {
+        return previousWinner;
+    }
+
     public void setWinner(int index){
         if(index >0 && index<horseIndex.size()){
             String horseName = horseIndex.get(index);
             winnerStatus.put(horseName,"won");
-            System.out.println("previousWinner "+previousWinner);
             if(Objects.nonNull(previousWinner)){
                 winnerStatus.put(previousWinner,"lost");
             }

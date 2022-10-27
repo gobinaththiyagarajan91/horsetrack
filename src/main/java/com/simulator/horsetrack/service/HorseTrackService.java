@@ -86,8 +86,6 @@ public class HorseTrackService implements SimulationService {
         while(matcher.find()){
           index  = index+Integer.parseInt(matcher.group());
         }
-        System.out.println("userInput "+userInput);
-        System.out.println("Index "+index );
         return index;
     }
 
