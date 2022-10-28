@@ -3,7 +3,6 @@ package com.simulator.horsetrack.service;
 import com.simulator.horsetrack.constants.InputTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -39,7 +38,7 @@ public class HorseTrackService implements SimulationService {
                 winnerService.setWinner(index);
             } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
                 String[] userInputArray = userInput.split("\\s+", 2);
-                if(verifyWinning(userInputArray[0])) {
+                if (verifyWinning(userInputArray[0])) {
                     calculateBetWinner(userInput, inventoryService.getTotalSum());
                 }
             } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
@@ -53,8 +52,13 @@ public class HorseTrackService implements SimulationService {
 
     }
 
-    private boolean verifyWinning(String betIndex){
-        return "won".equals(winnerService.getHorseIndex().get(betIndex));
+    private boolean verifyWinning(String betIndex) {
+        String horseName = winnerService.getHorseIndex().get(betIndex);
+        boolean matchBetweenBetAndWon = "won".equals(horseName);
+        if (matchBetweenBetAndWon) {
+            System.out.println("No Payout: " + horseName);
+        }
+        return matchBetweenBetAndWon;
     }
 
     private void calculateBetWinner(String userInput, int totalInventoryCash) {
@@ -70,31 +74,27 @@ public class HorseTrackService implements SimulationService {
         Map<Integer, Integer> denominationInventory = inventoryService.getDenominationInventory();
 
         Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
-                                           dispenceCash(totalAmountAfterWin, totalInventoryCash);
+                dispenceCash(totalAmountAfterWin, totalInventoryCash);
 
-        if(!resultMap.isEmpty()){
-            System.out.println("No Payout: "+horseBetName);
-        }else{
-            System.out.println("Payout: "+horseBetName+","+totalAmountAfterWin);
+        if (!resultMap.isEmpty()) {
+            System.out.println("No Payout: " + horseBetName);
+        } else {
+            System.out.println("Payout: " + horseBetName + "," + totalAmountAfterWin);
             System.out.println("Dispensing:");
-            denominationInventory.entrySet().stream().forEach(a->{
-                if(Objects.nonNull(resultMap.get(a.getKey()))){
-                    System.out.println("$"+a.getKey()+","+resultMap.get(a.getKey()));
-                }else{
-                    System.out.println("$"+a.getKey()+","+0);
+            denominationInventory.entrySet().stream().forEach(a -> {
+                if (Objects.nonNull(resultMap.get(a.getKey()))) {
+                    System.out.println("$" + a.getKey() + "," + resultMap.get(a.getKey()));
+                } else {
+                    System.out.println("$" + a.getKey() + "," + 0);
                 }
             });
-
         }
-
     }
 
 
     private void printIntialContext() {
         System.out.println("Inventory:");
-        inventoryService.getDenominationInventory().entrySet().forEach(a -> {
-            System.out.println("$" + a.getKey() + "," + a.getValue());
-        });
+        inventoryService.getDenominationInventory().entrySet().forEach(a -> System.out.println("$" + a.getKey() + "," + a.getValue()));
 
         System.out.println("Horses:");
         Map<String, String> winnerStatus = winnerService.getWinnerStatus();
