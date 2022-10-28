@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class RaceTrackService implements Simulator {
+public class RaceService implements Simulator {
 
     @Autowired
     private Scanner scanner;
@@ -93,7 +93,6 @@ public class RaceTrackService implements Simulator {
 
         Map<Integer, Integer> resultMap = payoutCalculator.setDenominationInventory(denominationInventory).
                 dispenseCash(totalAmountAfterWin);
-
         if (resultMap.isEmpty()) {
             System.out.println("Insufficient Funds:  " + totalAmountAfterWin);
         } else {
