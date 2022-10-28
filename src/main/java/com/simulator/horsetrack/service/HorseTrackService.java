@@ -26,7 +26,7 @@ public class HorseTrackService implements SimulationService {
     private WagerService wagerService;
 
     @Override
-    public void startTrack() {
+    public void start() {
         while (true) {
             displayInventoryAndWinner();
             String userInput = scanner.nextLine();

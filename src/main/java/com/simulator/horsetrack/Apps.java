@@ -20,7 +20,7 @@ public class Apps {
 
 	@PostConstruct
 	public void start() {
-		simulationService.startTrack();
+		simulationService.start();
 	}
 
 }
