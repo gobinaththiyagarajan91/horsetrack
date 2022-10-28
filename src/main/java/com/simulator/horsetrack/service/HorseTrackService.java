@@ -29,7 +29,6 @@ public class HorseTrackService implements SimulationService {
 
         while (true) {
             printIntialContext();
-
             String userInput = scanner.nextLine();
             String inputType = inputValidation(userInput);
 
@@ -53,9 +52,10 @@ public class HorseTrackService implements SimulationService {
     }
 
     private boolean verifyWinning(String betIndex) {
-        String horseName = winnerService.getHorseIndex().get(betIndex);
-        boolean matchBetweenBetAndWon = "won".equals(horseName);
-        if (matchBetweenBetAndWon) {
+        System.out.println("winnerService.getHorseIndex() "+winnerService.getHorseIndex().size());
+        String horseName = winnerService.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
+        boolean matchBetweenBetAndWon = "won".equals(winnerService.getWinnerStatus().get(horseName));
+        if (!matchBetweenBetAndWon) {
             System.out.println("No Payout: " + horseName);
         }
         return matchBetweenBetAndWon;
@@ -65,7 +65,7 @@ public class HorseTrackService implements SimulationService {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
-        String horseBetName = winnerService.getHorseIndex().get(userInputArray[0]);
+        String horseBetName = winnerService.getHorseIndex().get(Integer.parseInt(userInputArray[0].trim()));
 
         Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
 
@@ -76,7 +76,7 @@ public class HorseTrackService implements SimulationService {
         Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
                 dispenceCash(totalAmountAfterWin, totalInventoryCash);
 
-        if (!resultMap.isEmpty()) {
+        if (resultMap.isEmpty()) {
             System.out.println("No Payout: " + horseBetName);
         } else {
             System.out.println("Payout: " + horseBetName + "," + totalAmountAfterWin);

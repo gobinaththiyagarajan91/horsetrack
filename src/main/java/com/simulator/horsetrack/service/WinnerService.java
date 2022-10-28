@@ -15,8 +15,6 @@ public class WinnerService {
     @Value("#{${horse.index}}")
     private LinkedHashMap<Integer, String> horseIndex;
 
-
-
     @Value("#{${horse.winner.status}}")
     private Map<String, String> winnerStatusConstant;
 

@@ -27,12 +27,6 @@ public class WagerService {
 
     public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin, int availableCash) {
 
-        //Integer betAmount = Integer.parseInt(betAmountString);
-
-       // int totalAmountAfterWin = totalAmountAfterWin * horseOdds.get(horseName);
-
-      //  System.out.println("Payout: "+horseOdds.get(betAmountString)+","+totalAmountAfterWin);
-
         Map<Integer, Integer> resultMap = new HashMap<>();
 
         Map<Integer, Integer> sortedCashInventory = new TreeMap<>(Collections.reverseOrder());
@@ -44,7 +38,7 @@ public class WagerService {
                     int temp = totalAmountAfterWin / a.getKey();
                     int totalValue = a.getKey() * a.getValue();
                     if (totalValue >= temp) {
-                        resultMap.put(a.getKey(), a.getValue() - temp);
+                        denominationInventory.put(a.getKey(), a.getValue() - temp);
                         resultMap.put(a.getKey(), temp);
                     } else {
                         resultMap.clear();
