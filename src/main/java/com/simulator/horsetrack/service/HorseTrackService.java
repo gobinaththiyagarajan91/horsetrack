@@ -3,6 +3,8 @@ package com.simulator.horsetrack.service;
 import com.simulator.horsetrack.constants.InputTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -27,49 +29,74 @@ public class HorseTrackService implements SimulationService {
     @Override
     public void startTrack() {
 
-       while(true){
-           printIntialContext();
-           String userInput = scanner.nextLine();
-           String inputType = inputValidation(userInput);
-           if(InputTypes.WINNER.name().equalsIgnoreCase(inputType)){
-               int index=extractWinnerIndex(userInput);
-               winnerService.setWinner(index);
-           }else if(InputTypes.WAGER.name().equalsIgnoreCase(inputType)){
-               System.out.println(InputTypes.WAGER.name());
-               calculateBetWinner(userInput, inventoryService.getTotalSum());
-           }else if(InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)){
-               inventoryService.restockInventory();
-           }else if(InputTypes.QUIT.name().equalsIgnoreCase(inputType)){
-               break;
-           }else{
-               System.out.println("Invalid input:");
-           }
-       }
+        while (true) {
+            printIntialContext();
+
+            String userInput = scanner.nextLine();
+            String inputType = inputValidation(userInput);
+
+            if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
+                int index = extractWinnerIndex(userInput);
+                winnerService.setWinner(index);
+            } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
+                calculateBetWinner(userInput, inventoryService.getTotalSum());
+            } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
+                inventoryService.restockInventory();
+            } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
+                break;
+            } else {
+                System.out.println("Invalid input:");
+            }
+        }
 
     }
 
-    private void calculateBetWinner(String userInput, int totalValue){
+    private boolean decideWinning(){
+
+        return false;
+    }
+
+    private void calculateBetWinner(String userInput, int totalValue) {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
+        String horseBetName = winnerService.getHorseIndex().get(userInputArray[0]);
 
+        Map<Integer, Integer> denominationInventory = inventoryService.getDenominationInventory();
+
+        Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
+                                           dispenceCash(userInputArray[1], totalValue, horseBetName);
+
+        if(!resultMap.isEmpty()){
+            System.out.println("Insufficeint amount");
+        }else{
+            System.out.println("Dispensing:");
+            denominationInventory.entrySet().stream().forEach(a->{
+                if(Objects.nonNull(resultMap.get(a.getKey()))){
+                    System.out.println("$"+a.getKey()+","+resultMap.get(a.getKey()));
+                }else{
+                    System.out.println("$"+a.getKey()+","+0);
+                }
+            });
+
+        }
 
     }
 
 
-    private void printIntialContext(){
+    private void printIntialContext() {
         System.out.println("Inventory:");
-        inventoryService.getDenominationInventory().entrySet().forEach(a->{
-            System.out.println("$"+a.getKey()+","+a.getValue());
+        inventoryService.getDenominationInventory().entrySet().forEach(a -> {
+            System.out.println("$" + a.getKey() + "," + a.getValue());
         });
 
         System.out.println("Horses:");
         Map<String, String> winnerStatus = winnerService.getWinnerStatus();
-        Map<String, Integer>  horseOdds = wagerService.getHorseAndOdds();
+        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
 
-        winnerService.getHorseIndex().entrySet().forEach(a->{
+        winnerService.getHorseIndex().entrySet().forEach(a -> {
             String value = a.getValue();
-            System.out.println(a.getKey()+","+a.getValue()+","+horseOdds.get(value)+","+winnerStatus.get(value));
+            System.out.println(a.getKey() + "," + a.getValue() + "," + horseOdds.get(value) + "," + winnerStatus.get(value));
         });
 
 
@@ -87,18 +114,18 @@ public class HorseTrackService implements SimulationService {
             return InputTypes.QUIT.name();
         } else if (Pattern.compile("w\\s+\\d", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
             return InputTypes.WINNER.name();
-        }else if(Pattern.compile("\\d\\s+\\d").matcher(input).matches()){
+        } else if (Pattern.compile("\\d\\s+\\d").matcher(input).matches()) {
             return InputTypes.WAGER.name();
         }
         return "";
 
     }
 
-    private int extractWinnerIndex(String userInput){
+    private int extractWinnerIndex(String userInput) {
         int index = 0;
         Matcher matcher = Pattern.compile("\\d+").matcher(userInput);
-        while(matcher.find()){
-          index  = index+Integer.parseInt(matcher.group());
+        while (matcher.find()) {
+            index = index + Integer.parseInt(matcher.group());
         }
         return index;
     }
