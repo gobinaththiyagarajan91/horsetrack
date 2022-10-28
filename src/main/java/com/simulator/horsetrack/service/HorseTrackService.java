@@ -4,7 +4,6 @@ import com.simulator.horsetrack.constants.InputTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -39,7 +38,10 @@ public class HorseTrackService implements SimulationService {
                 int index = extractWinnerIndex(userInput);
                 winnerService.setWinner(index);
             } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
-                calculateBetWinner(userInput, inventoryService.getTotalSum());
+                String[] userInputArray = userInput.split("\\s+", 2);
+                if(verifyWinning(userInputArray[0])) {
+                    calculateBetWinner(userInput, inventoryService.getTotalSum());
+                }
             } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
                 inventoryService.restockInventory();
             } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
@@ -51,25 +53,29 @@ public class HorseTrackService implements SimulationService {
 
     }
 
-    private boolean decideWinning(){
-
-        return false;
+    private boolean verifyWinning(String betIndex){
+        return "won".equals(winnerService.getHorseIndex().get(betIndex));
     }
 
-    private void calculateBetWinner(String userInput, int totalValue) {
+    private void calculateBetWinner(String userInput, int totalInventoryCash) {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
         String horseBetName = winnerService.getHorseIndex().get(userInputArray[0]);
 
+        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
+
+        int totalAmountAfterWin = Integer.parseInt(userInputArray[1]) * horseOdds.get(horseBetName);
+
         Map<Integer, Integer> denominationInventory = inventoryService.getDenominationInventory();
 
         Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
-                                           dispenceCash(userInputArray[1], totalValue, horseBetName);
+                                           dispenceCash(totalAmountAfterWin, totalInventoryCash);
 
         if(!resultMap.isEmpty()){
-            System.out.println("Insufficeint amount");
+            System.out.println("No Payout: "+horseBetName);
         }else{
+            System.out.println("Payout: "+horseBetName+","+totalAmountAfterWin);
             System.out.println("Dispensing:");
             denominationInventory.entrySet().stream().forEach(a->{
                 if(Objects.nonNull(resultMap.get(a.getKey()))){

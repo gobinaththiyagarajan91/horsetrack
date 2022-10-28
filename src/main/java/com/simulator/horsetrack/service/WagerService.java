@@ -25,13 +25,13 @@ public class WagerService {
         return this;
     }
 
-    public Map<Integer, Integer> dispenceCash(String betAmountString, int availableCash, String horseName) {
+    public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin, int availableCash) {
 
-        Integer betAmount = Integer.parseInt(betAmountString);
+        //Integer betAmount = Integer.parseInt(betAmountString);
 
-        int totalAmountAfterWin = betAmount * horseOdds.get(horseName);
+       // int totalAmountAfterWin = totalAmountAfterWin * horseOdds.get(horseName);
 
-        System.out.println("Payout: "+horseOdds.get(betAmountString)+","+totalAmountAfterWin);
+      //  System.out.println("Payout: "+horseOdds.get(betAmountString)+","+totalAmountAfterWin);
 
         Map<Integer, Integer> resultMap = new HashMap<>();
 
