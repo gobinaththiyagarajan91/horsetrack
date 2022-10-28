@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Component
-public class WinnerService {
+public class WinnerManager {
 
     @Value("#{${horse.index}}")
     private LinkedHashMap<Integer, String> horseIndex;

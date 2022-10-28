@@ -12,19 +12,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class HorseTrackService implements Simulator {
+public class RaceTrackService implements Simulator {
 
     @Autowired
     private Scanner scanner;
 
     @Autowired
-    private InventoryServiceImpl inventoryService;
+    private InventoryManager inventoryManagerService;
 
     @Autowired
-    private WinnerService winnerService;
+    private WinnerManager winnerManager;
 
     @Autowired
-    private WagerService wagerService;
+    private PayoutCalculator payoutCalculator;
 
     @Override
     public void start() {
@@ -48,7 +48,7 @@ public class HorseTrackService implements Simulator {
     }
 
     private void reStock() {
-        inventoryService.restockInventory();
+        inventoryManagerService.restockInventory();
     }
 
     private void setWagerBet(String userInput) {
@@ -64,15 +64,15 @@ public class HorseTrackService implements Simulator {
 
     private void setWinner(String userInput) {
         int index = extractWinnerIndex(userInput);
-        boolean isSuccessfully = winnerService.setWinner(index);
+        boolean isSuccessfully = winnerManager.setWinner(index);
         if (!isSuccessfully) {
             System.out.println("Invalid Horse Number: " + index);
         }
     }
 
     private boolean verifyWinning(String betIndex) {
-        String horseName = winnerService.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
-        boolean matchBetweenBetAndWon = RaceResult.WON.getResult().equals(winnerService.getWinnerStatus().get(horseName));
+        String horseName = winnerManager.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
+        boolean matchBetweenBetAndWon = RaceResult.WON.getResult().equals(winnerManager.getWinnerStatus().get(horseName));
         if (!matchBetweenBetAndWon) {
             System.out.println("No Payout: " + horseName);
         }
@@ -83,21 +83,21 @@ public class HorseTrackService implements Simulator {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
-        String horseBetName = winnerService.getHorseIndex().get(Integer.parseInt(userInputArray[0].trim()));
+        String horseBetName = winnerManager.getHorseIndex().get(Integer.parseInt(userInputArray[0].trim()));
 
-        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
+        Map<String, Integer> horseOdds = payoutCalculator.getHorseAndOdds();
 
         int totalAmountAfterWin = Integer.parseInt(userInputArray[1]) * horseOdds.get(horseBetName);
 
-        Map<Integer, Integer> denominationInventory = inventoryService.getDenominationInventory();
+        Map<Integer, Integer> denominationInventory = inventoryManagerService.getDenominationInventory();
 
-        Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
-                dispenceCash(totalAmountAfterWin);
+        Map<Integer, Integer> resultMap = payoutCalculator.setDenominationInventory(denominationInventory).
+                dispenseCash(totalAmountAfterWin);
 
         if (resultMap.isEmpty()) {
             System.out.println("Insufficient Funds:  " + totalAmountAfterWin);
         } else {
-            System.out.println("Payout: " + horseBetName + "," + totalAmountAfterWin);
+            System.out.println("Payout: " + horseBetName + ",$" + totalAmountAfterWin);
             System.out.println("Dispensing:");
             denominationInventory.entrySet().stream().forEach(a -> {
                 if (Objects.nonNull(resultMap.get(a.getKey()))) {
@@ -111,12 +111,12 @@ public class HorseTrackService implements Simulator {
 
 
     private void displayInventoryAndWinner() {
-        Map<String, String> winnerStatusMap = winnerService.getWinnerStatus();
-        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
+        Map<String, String> winnerStatusMap = winnerManager.getWinnerStatus();
+        Map<String, Integer> horseOdds = payoutCalculator.getHorseAndOdds();
         System.out.println("Inventory:");
-        inventoryService.getDenominationInventory().entrySet().forEach(a -> System.out.println("$" + a.getKey() + "," + a.getValue()));
+        inventoryManagerService.getDenominationInventory().entrySet().forEach(a -> System.out.println("$" + a.getKey() + "," + a.getValue()));
         System.out.println("Horses:");
-        winnerService.getHorseIndex().entrySet().forEach(a -> {
+        winnerManager.getHorseIndex().entrySet().forEach(a -> {
             String value = a.getValue();
             System.out.println(a.getKey() + "," + a.getValue() + "," + horseOdds.get(value) + "," + winnerStatusMap.get(value));
         });
@@ -127,8 +127,6 @@ public class HorseTrackService implements Simulator {
         if (Objects.isNull(input) || input.trim().isEmpty()) {
             return "";
         }
-        //[0-9]+\s+[1-9]\d*(\.\d+)?$ decimal
-        //[0-9]+\s+[0-9]+ non decimal
         input = input.trim();
         if ("r".equalsIgnoreCase(input)) {
             return InputTypes.RESTOCK.name();

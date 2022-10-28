@@ -8,8 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-//@Scope("prototype") // Changing the scope to prototype to better handle thread safety of the applciation
-public class InventoryServiceImpl {
+public class InventoryManager {
 
     @Value("#{${denomination.inventory}}")
     private LinkedHashMap<Integer, Integer> denominationInventoryConstant;
@@ -17,7 +16,7 @@ public class InventoryServiceImpl {
     private LinkedHashMap<Integer, Integer> denominationInventory;
 
     @PostConstruct
-    private void init(){
+    private void init() {
         denominationInventory = new LinkedHashMap<>();
         restockInventory();
     }

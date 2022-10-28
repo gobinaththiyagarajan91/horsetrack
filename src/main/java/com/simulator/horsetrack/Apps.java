@@ -6,17 +6,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.annotation.PostConstruct;
-
 @SpringBootApplication
-public class Apps implements CommandLineRunner{
+public class Apps implements CommandLineRunner {
     @Autowired
     private Simulator simulator;
+
     public static void main(String[] args) {
         SpringApplication.run(Apps.class, args);
     }
+
     @Override
     public void run(String... strings) throws Exception {
-		simulator.start();
+        simulator.start();
     }
 }

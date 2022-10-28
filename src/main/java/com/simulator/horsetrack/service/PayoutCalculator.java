@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class WagerService {
+public class PayoutCalculator {
 
     @Value("#{${horse.odds}}")
     private Map<String, Integer> horseOdds;
@@ -21,12 +21,12 @@ public class WagerService {
         return horseOdds;
     }
 
-    public WagerService setDenominationInventory(Map<Integer, Integer> denominationInventory) {
+    public PayoutCalculator setDenominationInventory(Map<Integer, Integer> denominationInventory) {
         this.denominationInventory = denominationInventory;
         return this;
     }
 
-    public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin) {
+    public Map<Integer, Integer> dispenseCash(int totalAmountAfterWin) {
 
         Map<Integer, Integer> resultMap = new HashMap<>();
         Map<Integer, Integer> sortedCashInventory = new TreeMap<>(Collections.reverseOrder());
@@ -44,16 +44,9 @@ public class WagerService {
                         int key = a.getKey();
                         int value = a.getValue();
                         while (totalAmountAfterWin > key && value > 0) {
-                            int decrementValue = value - 1;
-                            denominationInventory.put(key, decrementValue);
-                            Integer resultValue = resultMap.get(key);
-                            if (resultValue != null) {
-                                resultMap.put(key, resultMap.get(key) + 1);
-                            } else {
-                                resultMap.put(key, 1);
-                            }
-                            totalAmountAfterWin = totalAmountAfterWin - (a.getKey());
-                            value--;
+                            denominationInventory.put(key, value--);
+                            resultMap.put(key, resultMap.get(key) != null ? resultMap.get(key) + 1 : 1);
+                            totalAmountAfterWin = totalAmountAfterWin - (key);
                         }
                     }
                 }
@@ -65,11 +58,11 @@ public class WagerService {
         return resultMap;
     }
 
-    private int getTotalInventoryCash(){
+    private int getTotalInventoryCash() {
         AtomicInteger totalSum = new AtomicInteger();
-        denominationInventory.entrySet().forEach(a->{
-            totalSum.set(totalSum.get() + (a.getKey() * a.getValue()));
-        });
+        denominationInventory.entrySet().forEach(a ->
+                totalSum.set(totalSum.get() + (a.getKey() * a.getValue()))
+        );
         return totalSum.get();
     }
 }
