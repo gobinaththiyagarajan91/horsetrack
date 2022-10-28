@@ -16,16 +16,10 @@ public class InventoryServiceImpl {
 
     private LinkedHashMap<Integer, Integer> denominationInventory;
 
-    private int totalSum = 0;
-
     @PostConstruct
     private void init(){
         denominationInventory = new LinkedHashMap<>();
         restockInventory();
-        denominationInventory.entrySet().forEach(a->{
-            totalSum = totalSum+(a.getKey()* a.getValue());
-        });
-
     }
 
     public void restockInventory() {
@@ -36,11 +30,4 @@ public class InventoryServiceImpl {
         return denominationInventory;
     }
 
-    public int getTotalSum() {
-        return totalSum;
-    }
-
-    public void setTotalSum(int totalSum) {
-        this.totalSum = totalSum;
-    }
 }

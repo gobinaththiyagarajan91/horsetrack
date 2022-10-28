@@ -3,7 +3,6 @@ package com.simulator.horsetrack.service;
 import com.simulator.horsetrack.constants.RaceResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,10 +41,6 @@ public class WinnerService {
         return winnerStatus;
     }
 
-    public String getPreviousWinner() {
-        return previousWinner;
-    }
-
     public boolean setWinner(int index) {
         if (index > 0 && index <= horseIndex.size()) {
             String horseName = horseIndex.get(index);
@@ -59,11 +54,8 @@ public class WinnerService {
             previousWinner = horseName;
             return true;
         } else {
-            //System.out.println("Invalid Horse Number: " + index);
             return false;
         }
 
     }
-
-
 }

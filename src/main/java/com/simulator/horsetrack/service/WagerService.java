@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class WagerService {
@@ -25,13 +26,13 @@ public class WagerService {
         return this;
     }
 
-    public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin, int availableCash) {
+    public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin) {
 
         Map<Integer, Integer> resultMap = new HashMap<>();
         Map<Integer, Integer> sortedCashInventory = new TreeMap<>(Collections.reverseOrder());
         sortedCashInventory.putAll(denominationInventory);
 
-        if (totalAmountAfterWin < availableCash) {
+        if (totalAmountAfterWin < getTotalInventoryCash()) {
             for (Map.Entry<Integer, Integer> a : sortedCashInventory.entrySet()) {
                 if (totalAmountAfterWin > 0) {
                     int temp = totalAmountAfterWin / a.getKey();
@@ -57,7 +58,6 @@ public class WagerService {
                     }
                 }
             }
-
             if (totalAmountAfterWin > 0) {
                 resultMap.clear();
             }
@@ -65,5 +65,11 @@ public class WagerService {
         return resultMap;
     }
 
-
+    private int getTotalInventoryCash(){
+        AtomicInteger totalSum = new AtomicInteger();
+        denominationInventory.entrySet().forEach(a->{
+            totalSum.set(totalSum.get() + (a.getKey() * a.getValue()));
+        });
+        return totalSum.get();
+    }
 }

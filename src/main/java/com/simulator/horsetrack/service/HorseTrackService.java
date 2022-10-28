@@ -4,6 +4,7 @@ import com.simulator.horsetrack.constants.InputTypes;
 import com.simulator.horsetrack.constants.RaceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -30,6 +31,7 @@ public class HorseTrackService implements Simulator {
         while (true) {
             displayInventoryAndWinner();
             String userInput = scanner.nextLine();
+            System.out.println(userInput);
             String inputType = inputValidation(userInput);
             if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
                 setWinner(userInput);
@@ -40,26 +42,23 @@ public class HorseTrackService implements Simulator {
             } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
                 break;
             } else {
-                System.out.println("Invalid input: "+userInput);
+                System.out.println("Invalid input: " + userInput);
             }
         }
     }
 
-
-    private void reStock(){
+    private void reStock() {
         inventoryService.restockInventory();
     }
 
-    private void setWagerBet(String userInput){
+    private void setWagerBet(String userInput) {
         String[] userInputArray = userInput.split("\\s+", 2);
-
         if (Pattern.compile("[0-9]*['. '][0-9]*").matcher(userInputArray[1]).find()) {
-            System.out.println("Invalid Bet: "+userInputArray[1]);
+            System.out.println("Invalid Bet: " + userInputArray[1]);
             return;
         }
-
         if (verifyWinning(userInputArray[0])) {
-            calculateBetWinner(userInput, inventoryService.getTotalSum());
+            calculateBetWinner(userInput);
         }
     }
 
@@ -80,7 +79,7 @@ public class HorseTrackService implements Simulator {
         return matchBetweenBetAndWon;
     }
 
-    private void calculateBetWinner(String userInput, int totalInventoryCash) {
+    private void calculateBetWinner(String userInput) {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
@@ -93,7 +92,7 @@ public class HorseTrackService implements Simulator {
         Map<Integer, Integer> denominationInventory = inventoryService.getDenominationInventory();
 
         Map<Integer, Integer> resultMap = wagerService.setDenominationInventory(denominationInventory).
-                dispenceCash(totalAmountAfterWin, totalInventoryCash);
+                dispenceCash(totalAmountAfterWin);
 
         if (resultMap.isEmpty()) {
             System.out.println("Insufficient Funds:  " + totalAmountAfterWin);
