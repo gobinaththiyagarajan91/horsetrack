@@ -1,6 +1,7 @@
 package com.simulator.horsetrack.service;
 
 import com.simulator.horsetrack.constants.InputTypes;
+import com.simulator.horsetrack.constants.RaceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,26 +65,16 @@ public class HorseTrackService implements Simulator {
     }
 
     private void setWinner(String userInput) {
-        checkForDecimal(userInput);
         int index = extractWinnerIndex(userInput);
         boolean isSuccessfully = winnerService.setWinner(index);
-        if (isSuccessfully) {
-
-        } else {
+        if (!isSuccessfully) {
             System.out.println("Invalid Horse Number: " + index);
         }
     }
 
-    private boolean checkForDecimal(String userInput){
-
-        return false;
-    }
-
-
     private boolean verifyWinning(String betIndex) {
-       // System.out.println("winnerService.getHorseIndex() " + winnerService.getHorseIndex().size());
         String horseName = winnerService.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
-        boolean matchBetweenBetAndWon = "won".equals(winnerService.getWinnerStatus().get(horseName));
+        boolean matchBetweenBetAndWon = RaceResult.WON.getResult().equals(winnerService.getWinnerStatus().get(horseName));
         if (!matchBetweenBetAndWon) {
             System.out.println("No Payout: " + horseName);
         }

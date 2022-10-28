@@ -1,5 +1,6 @@
 package com.simulator.horsetrack.service;
 
+import com.simulator.horsetrack.constants.RaceResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class WinnerService {
         winnerStatus = new HashMap<>();
         winnerStatus.putAll(winnerStatusConstant);
         winnerStatus.entrySet().forEach(a -> {
-            if ("won".equals(winnerStatus.get(a.getKey()))) {
+            if (RaceResult.WON.getResult().equals(winnerStatus.get(a.getKey()))) {
                 previousWinner = a.getKey();
             }
         });
@@ -48,12 +49,12 @@ public class WinnerService {
     public boolean setWinner(int index) {
         if (index > 0 && index <= horseIndex.size()) {
             String horseName = horseIndex.get(index);
-            if("won".equals(winnerStatus.get(horseName))){
+            if(RaceResult.WON.getResult().equals(winnerStatus.get(horseName))){
                 return true;
             }
-            winnerStatus.put(horseName, "won");
+            winnerStatus.put(horseName, RaceResult.WON.getResult());
             if (Objects.nonNull(previousWinner)) {
-                winnerStatus.put(previousWinner, "lost");
+                winnerStatus.put(previousWinner, RaceResult.LOST.getResult());
             }
             previousWinner = horseName;
             return true;
