@@ -28,22 +28,27 @@ public class RaceService implements Simulator {
 
     @Override
     public void start() {
-        while (true) {
-            displayInventoryAndWinner();
-            String userInput = scanner.nextLine();
-            System.out.println(userInput);
-            String inputType = inputValidation(userInput);
-            if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
-                setWinner(userInput);
-            } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
-                setWagerBet(userInput);
-            } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
-                reStock();
-            } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
-                break;
-            } else {
-                System.out.println("Invalid input: " + userInput);
+
+        try {
+            while (true) {
+                displayInventoryAndWinner();
+                String userInput = scanner.nextLine();
+                System.out.println(userInput);
+                String inputType = inputValidation(userInput);
+                if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
+                    setWinner(userInput);
+                } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
+                    setWagerBet(userInput);
+                } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
+                    reStock();
+                } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
+                    break;
+                } else {
+                    System.out.println("Invalid input: " + userInput);
+                }
             }
+        } catch (RuntimeException ex) {
+            System.err.println("Exception has occured "+ex);
         }
     }
 
