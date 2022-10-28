@@ -1,7 +1,7 @@
 package com.simulator.horsetrack.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -9,14 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Service
+@Component
 public class WinnerService {
 
     @Value("#{${horse.index}}")
     private LinkedHashMap<Integer, String> horseIndex;
 
-    @Value("#{${horse.odds}}")
-    private Map<String, Integer> horseOdds;
+
 
     @Value("#{${horse.winner.status}}")
     private Map<String, String> winnerStatusConstant;
@@ -40,16 +39,8 @@ public class WinnerService {
         return horseIndex;
     }
 
-    public Map<String, Integer> getHorseAndOdds() {
-        return horseOdds;
-    }
-
     public Map<String, String> getWinnerStatus() {
         return winnerStatus;
-    }
-
-    public void setPreviousWinner(String previousWinner) {
-        this.previousWinner = previousWinner;
     }
 
     public String getPreviousWinner() {

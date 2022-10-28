@@ -21,6 +21,9 @@ public class HorseTrackService implements SimulationService {
     @Autowired
     private WinnerService winnerService;
 
+    @Autowired
+    private WagerService wagerService;
+
     @Override
     public void startTrack() {
 
@@ -33,25 +36,36 @@ public class HorseTrackService implements SimulationService {
                winnerService.setWinner(index);
            }else if(InputTypes.WAGER.name().equalsIgnoreCase(inputType)){
                System.out.println(InputTypes.WAGER.name());
+               calculateBetWinner(userInput, inventoryService.getTotalSum());
            }else if(InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)){
-               System.out.println(InputTypes.RESTOCK.name());
                inventoryService.restockInventory();
            }else if(InputTypes.QUIT.name().equalsIgnoreCase(inputType)){
                break;
+           }else{
+               System.out.println("Invalid input:");
            }
        }
 
     }
 
+    private void calculateBetWinner(String userInput, int totalValue){
+
+        String[] userInputArray = userInput.split("\\s+", 2);
+
+
+
+    }
+
+
     private void printIntialContext(){
         System.out.println("Inventory:");
         inventoryService.getDenominationInventory().entrySet().forEach(a->{
-            System.out.println(a.getKey()+","+a.getValue());
+            System.out.println("$"+a.getKey()+","+a.getValue());
         });
 
         System.out.println("Horses:");
         Map<String, String> winnerStatus = winnerService.getWinnerStatus();
-        Map<String, Integer>  horseOdds = winnerService.getHorseAndOdds();
+        Map<String, Integer>  horseOdds = wagerService.getHorseAndOdds();
 
         winnerService.getHorseIndex().entrySet().forEach(a->{
             String value = a.getValue();
@@ -71,16 +85,16 @@ public class HorseTrackService implements SimulationService {
             return InputTypes.RESTOCK.name();
         } else if ("q".equalsIgnoreCase(input)) {
             return InputTypes.QUIT.name();
-        } else if (Pattern.compile("w\\s*\\d", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
+        } else if (Pattern.compile("w\\s+\\d", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
             return InputTypes.WINNER.name();
-        }else if(Pattern.compile("\\d\\s*\\d").matcher(input).matches()){
+        }else if(Pattern.compile("\\d\\s+\\d").matcher(input).matches()){
             return InputTypes.WAGER.name();
         }
         return "";
 
     }
 
-    public int extractWinnerIndex(String userInput){
+    private int extractWinnerIndex(String userInput){
         int index = 0;
         Matcher matcher = Pattern.compile("\\d+").matcher(userInput);
         while(matcher.find()){
