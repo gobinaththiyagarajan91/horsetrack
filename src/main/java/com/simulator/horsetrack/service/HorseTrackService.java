@@ -4,7 +4,6 @@ import com.simulator.horsetrack.constants.InputTypes;
 import com.simulator.horsetrack.constants.RaceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
