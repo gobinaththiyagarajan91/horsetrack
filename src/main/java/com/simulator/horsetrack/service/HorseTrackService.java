@@ -27,9 +27,8 @@ public class HorseTrackService implements SimulationService {
 
     @Override
     public void startTrack() {
-
         while (true) {
-            printIntialContext();
+            displayInventoryAndWinner();
             String userInput = scanner.nextLine();
             String inputType = inputValidation(userInput);
             if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
@@ -60,8 +59,8 @@ public class HorseTrackService implements SimulationService {
 
     private void setWinner(String userInput) {
         int index = extractWinnerIndex(userInput);
-        boolean isSuccessfull = winnerService.setWinner(index);
-        if (isSuccessfull) {
+        boolean isSuccessfully = winnerService.setWinner(index);
+        if (isSuccessfully) {
 
         } else {
             System.out.println("Invalid Horse Number: " + index);
@@ -110,17 +109,15 @@ public class HorseTrackService implements SimulationService {
     }
 
 
-    private void printIntialContext() {
+    private void displayInventoryAndWinner() {
+        Map<String, String> winnerStatusMap = winnerService.getWinnerStatus();
+        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
         System.out.println("Inventory:");
         inventoryService.getDenominationInventory().entrySet().forEach(a -> System.out.println("$" + a.getKey() + "," + a.getValue()));
-
         System.out.println("Horses:");
-        Map<String, String> winnerStatus = winnerService.getWinnerStatus();
-        Map<String, Integer> horseOdds = wagerService.getHorseAndOdds();
-
         winnerService.getHorseIndex().entrySet().forEach(a -> {
             String value = a.getValue();
-            System.out.println(a.getKey() + "," + a.getValue() + "," + horseOdds.get(value) + "," + winnerStatus.get(value));
+            System.out.println(a.getKey() + "," + a.getValue() + "," + horseOdds.get(value) + "," + winnerStatusMap.get(value));
         });
     }
 
