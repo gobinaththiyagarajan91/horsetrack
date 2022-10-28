@@ -58,7 +58,7 @@ public class RaceTrackService implements Simulator {
             return;
         }
         if (verifyWinning(userInputArray[0])) {
-            calculateBetWinner(userInput);
+            calculateBetAmount(userInput);
         }
     }
 
@@ -79,7 +79,7 @@ public class RaceTrackService implements Simulator {
         return matchBetweenBetAndWon;
     }
 
-    private void calculateBetWinner(String userInput) {
+    private void calculateBetAmount(String userInput) {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 

@@ -3,10 +3,7 @@ package com.simulator.horsetrack.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
@@ -31,6 +28,8 @@ public class PayoutCalculator {
         Map<Integer, Integer> resultMap = new HashMap<>();
         Map<Integer, Integer> sortedCashInventory = new TreeMap<>(Collections.reverseOrder());
         sortedCashInventory.putAll(denominationInventory);
+        Map<Integer, Integer> tempMap = new LinkedHashMap<>();
+        tempMap.putAll(denominationInventory);
 
         if (totalAmountAfterWin < getTotalInventoryCash()) {
             for (Map.Entry<Integer, Integer> a : sortedCashInventory.entrySet()) {
@@ -52,6 +51,7 @@ public class PayoutCalculator {
                 }
             }
             if (totalAmountAfterWin > 0) {
+                denominationInventory.putAll(tempMap);
                 resultMap.clear();
             }
         }
