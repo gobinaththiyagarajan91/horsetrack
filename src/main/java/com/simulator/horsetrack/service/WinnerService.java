@@ -23,11 +23,11 @@ public class WinnerService {
     private String previousWinner;
 
     @PostConstruct
-    private void init(){
+    private void init() {
         winnerStatus = new HashMap<>();
         winnerStatus.putAll(winnerStatusConstant);
-        winnerStatus.entrySet().forEach(a->{
-            if("won".equals(winnerStatus.get(a.getKey()))){
+        winnerStatus.entrySet().forEach(a -> {
+            if ("won".equals(winnerStatus.get(a.getKey()))) {
                 previousWinner = a.getKey();
             }
         });
@@ -45,16 +45,21 @@ public class WinnerService {
         return previousWinner;
     }
 
-    public void setWinner(int index){
-        if(index >0 && index<horseIndex.size()){
+    public boolean setWinner(int index) {
+        if (index > 0 && index <= horseIndex.size()) {
             String horseName = horseIndex.get(index);
-            winnerStatus.put(horseName,"won");
-            if(Objects.nonNull(previousWinner)){
-                winnerStatus.put(previousWinner,"lost");
+            if("won".equals(winnerStatus.get(horseName))){
+                return true;
+            }
+            winnerStatus.put(horseName, "won");
+            if (Objects.nonNull(previousWinner)) {
+                winnerStatus.put(previousWinner, "lost");
             }
             previousWinner = horseName;
-        }else{
-            System.out.println("Invalid Horse Number: "+index);
+            return true;
+        } else {
+            //System.out.println("Invalid Horse Number: " + index);
+            return false;
         }
 
     }

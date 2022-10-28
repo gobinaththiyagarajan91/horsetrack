@@ -28,7 +28,6 @@ public class WagerService {
     public Map<Integer, Integer> dispenceCash(int totalAmountAfterWin, int availableCash) {
 
         Map<Integer, Integer> resultMap = new HashMap<>();
-
         Map<Integer, Integer> sortedCashInventory = new TreeMap<>(Collections.reverseOrder());
         sortedCashInventory.putAll(denominationInventory);
 
@@ -36,16 +35,31 @@ public class WagerService {
             for (Map.Entry<Integer, Integer> a : sortedCashInventory.entrySet()) {
                 if (totalAmountAfterWin > 0) {
                     int temp = totalAmountAfterWin / a.getKey();
-                    int totalValue = a.getKey() * a.getValue();
-                    if (totalValue >= temp) {
+                    if (a.getValue() >= temp) {
                         denominationInventory.put(a.getKey(), a.getValue() - temp);
                         resultMap.put(a.getKey(), temp);
+                        totalAmountAfterWin = totalAmountAfterWin - (a.getKey() * temp);
                     } else {
-                        resultMap.clear();
-                        break;
+                        int key = a.getKey();
+                        int value = a.getValue();
+                        while (totalAmountAfterWin > key && value > 0) {
+                            int decrementValue = value - 1;
+                            denominationInventory.put(key, decrementValue);
+                            Integer resultValue = resultMap.get(key);
+                            if (resultValue != null) {
+                                resultMap.put(key, resultMap.get(key) + 1);
+                            } else {
+                                resultMap.put(key, 1);
+                            }
+                            totalAmountAfterWin = totalAmountAfterWin - (a.getKey());
+                            value--;
+                        }
                     }
-                    totalAmountAfterWin = totalAmountAfterWin - temp * a.getKey();
                 }
+            }
+
+            if (totalAmountAfterWin > 0) {
+                resultMap.clear();
             }
         }
         return resultMap;

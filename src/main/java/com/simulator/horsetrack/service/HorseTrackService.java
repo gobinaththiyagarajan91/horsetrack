@@ -3,6 +3,7 @@ package com.simulator.horsetrack.service;
 import com.simulator.horsetrack.constants.InputTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -31,28 +32,45 @@ public class HorseTrackService implements SimulationService {
             printIntialContext();
             String userInput = scanner.nextLine();
             String inputType = inputValidation(userInput);
-
             if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
-                int index = extractWinnerIndex(userInput);
-                winnerService.setWinner(index);
+                setWinner(userInput);
             } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
-                String[] userInputArray = userInput.split("\\s+", 2);
-                if (verifyWinning(userInputArray[0])) {
-                    calculateBetWinner(userInput, inventoryService.getTotalSum());
-                }
+                setWaggerBet(userInput);
             } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
-                inventoryService.restockInventory();
+                reStock();
             } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
                 break;
             } else {
-                System.out.println("Invalid input:");
+                System.out.println("Invalid input: "+userInput);
             }
+        }
+    }
+
+
+    private void reStock(){
+        inventoryService.restockInventory();
+    }
+
+    private void setWaggerBet(String userInput){
+        String[] userInputArray = userInput.split("\\s+", 2);
+        if (verifyWinning(userInputArray[0])) {
+            calculateBetWinner(userInput, inventoryService.getTotalSum());
+        }
+    }
+
+    private void setWinner(String userInput) {
+        int index = extractWinnerIndex(userInput);
+        boolean isSuccessfull = winnerService.setWinner(index);
+        if (isSuccessfull) {
+
+        } else {
+            System.out.println("Invalid Horse Number: " + index);
         }
 
     }
 
     private boolean verifyWinning(String betIndex) {
-        System.out.println("winnerService.getHorseIndex() "+winnerService.getHorseIndex().size());
+        System.out.println("winnerService.getHorseIndex() " + winnerService.getHorseIndex().size());
         String horseName = winnerService.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
         boolean matchBetweenBetAndWon = "won".equals(winnerService.getWinnerStatus().get(horseName));
         if (!matchBetweenBetAndWon) {
@@ -77,7 +95,7 @@ public class HorseTrackService implements SimulationService {
                 dispenceCash(totalAmountAfterWin, totalInventoryCash);
 
         if (resultMap.isEmpty()) {
-            System.out.println("No Payout: " + horseBetName);
+            System.out.println("Insufficient Funds:  " + totalAmountAfterWin);
         } else {
             System.out.println("Payout: " + horseBetName + "," + totalAmountAfterWin);
             System.out.println("Dispensing:");
@@ -104,8 +122,6 @@ public class HorseTrackService implements SimulationService {
             String value = a.getValue();
             System.out.println(a.getKey() + "," + a.getValue() + "," + horseOdds.get(value) + "," + winnerStatus.get(value));
         });
-
-
     }
 
     private String inputValidation(String input) {
@@ -118,13 +134,12 @@ public class HorseTrackService implements SimulationService {
             return InputTypes.RESTOCK.name();
         } else if ("q".equalsIgnoreCase(input)) {
             return InputTypes.QUIT.name();
-        } else if (Pattern.compile("w\\s+\\d", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
+        } else if (Pattern.compile("w\\s+[0-9]+", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
             return InputTypes.WINNER.name();
-        } else if (Pattern.compile("\\d\\s+\\d").matcher(input).matches()) {
+        } else if (Pattern.compile("[0-9]+\\s+[0-9]+").matcher(input).matches()) {
             return InputTypes.WAGER.name();
         }
         return "";
-
     }
 
     private int extractWinnerIndex(String userInput) {
@@ -135,5 +150,4 @@ public class HorseTrackService implements SimulationService {
         }
         return index;
     }
-
 }
