@@ -1,6 +1,6 @@
 package com.simulator.horsetrack.service;
 
-public interface SimulationService {
+public interface Simulator {
 
     void start();
 }

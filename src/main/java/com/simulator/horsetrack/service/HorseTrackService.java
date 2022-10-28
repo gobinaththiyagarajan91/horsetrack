@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class HorseTrackService implements SimulationService {
+public class HorseTrackService implements Simulator {
 
     @Autowired
     private Scanner scanner;
@@ -34,7 +34,7 @@ public class HorseTrackService implements SimulationService {
             if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
                 setWinner(userInput);
             } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
-                setWaggerBet(userInput);
+                setWagerBet(userInput);
             } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
                 reStock();
             } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
@@ -50,14 +50,21 @@ public class HorseTrackService implements SimulationService {
         inventoryService.restockInventory();
     }
 
-    private void setWaggerBet(String userInput){
+    private void setWagerBet(String userInput){
         String[] userInputArray = userInput.split("\\s+", 2);
+
+        if (Pattern.compile("[0-9]*['. '][0-9]*").matcher(userInputArray[1]).find()) {
+            System.out.println("Invalid Bet: "+userInputArray[1]);
+            return;
+        }
+
         if (verifyWinning(userInputArray[0])) {
             calculateBetWinner(userInput, inventoryService.getTotalSum());
         }
     }
 
     private void setWinner(String userInput) {
+        checkForDecimal(userInput);
         int index = extractWinnerIndex(userInput);
         boolean isSuccessfully = winnerService.setWinner(index);
         if (isSuccessfully) {
@@ -65,11 +72,16 @@ public class HorseTrackService implements SimulationService {
         } else {
             System.out.println("Invalid Horse Number: " + index);
         }
-
     }
 
+    private boolean checkForDecimal(String userInput){
+
+        return false;
+    }
+
+
     private boolean verifyWinning(String betIndex) {
-        System.out.println("winnerService.getHorseIndex() " + winnerService.getHorseIndex().size());
+       // System.out.println("winnerService.getHorseIndex() " + winnerService.getHorseIndex().size());
         String horseName = winnerService.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
         boolean matchBetweenBetAndWon = "won".equals(winnerService.getWinnerStatus().get(horseName));
         if (!matchBetweenBetAndWon) {
@@ -126,6 +138,8 @@ public class HorseTrackService implements SimulationService {
         if (Objects.isNull(input) || input.trim().isEmpty()) {
             return "";
         }
+        //[0-9]+\s+[1-9]\d*(\.\d+)?$ decimal
+        //[0-9]+\s+[0-9]+ non decimal
         input = input.trim();
         if ("r".equalsIgnoreCase(input)) {
             return InputTypes.RESTOCK.name();
@@ -133,7 +147,7 @@ public class HorseTrackService implements SimulationService {
             return InputTypes.QUIT.name();
         } else if (Pattern.compile("w\\s+[0-9]+", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
             return InputTypes.WINNER.name();
-        } else if (Pattern.compile("[0-9]+\\s+[0-9]+").matcher(input).matches()) {
+        } else if (Pattern.compile("[0-9]+\\s+[1-9]\\d*(\\.\\d+)?$").matcher(input).matches()) {
             return InputTypes.WAGER.name();
         }
         return "";

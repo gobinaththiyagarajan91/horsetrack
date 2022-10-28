@@ -1,6 +1,6 @@
 package com.simulator.horsetrack;
 
-import com.simulator.horsetrack.service.SimulationService;
+import com.simulator.horsetrack.service.Simulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 public class Apps {
 
 	@Autowired
-	private SimulationService simulationService;
+	private Simulator simulationService;
 
 
 	public static void main(String[] args) {
