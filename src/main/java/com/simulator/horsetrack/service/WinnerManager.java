@@ -33,7 +33,7 @@ public class WinnerManager {
         });
     }
 
-    public LinkedHashMap<Integer, String> getHorseIndex() {
+    public Map<Integer, String> getHorseIndex() {
         return horseIndex;
     }
 

@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class RaceService implements Simulator {
+public class HorseTrack implements Simulator {
 
     @Autowired
     private Scanner scanner;
@@ -28,7 +28,6 @@ public class RaceService implements Simulator {
 
     @Override
     public void start() {
-
         try {
             while (true) {
                 displayInventoryAndWinner();
@@ -87,13 +86,12 @@ public class RaceService implements Simulator {
 
         String[] userInputArray = userInput.split("\\s+", 2);
 
+        Map<String, Integer> horseOdds = payoutCalculator.getHorseAndOdds();
+        Map<Integer, Integer> denominationInventory = inventoryManagerService.getDenominationInventory();
+
         String horseBetName = winnerManager.getHorseIndex().get(Integer.parseInt(userInputArray[0].trim()));
 
-        Map<String, Integer> horseOdds = payoutCalculator.getHorseAndOdds();
-
         int totalAmountAfterWin = Integer.parseInt(userInputArray[1]) * horseOdds.get(horseBetName);
-
-        Map<Integer, Integer> denominationInventory = inventoryManagerService.getDenominationInventory();
 
         Map<Integer, Integer> resultMap = payoutCalculator.setDenominationInventory(denominationInventory).
                 dispenseCash(totalAmountAfterWin);
