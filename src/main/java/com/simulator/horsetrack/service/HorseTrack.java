@@ -42,7 +42,7 @@ public class HorseTrack implements Simulator {
                 } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
                     break;
                 } else {
-                    System.out.println("Invalid input: " + userInput);
+                    System.out.println("Invalid Command: " + userInput);
                 }
             }
         } catch (RuntimeException ex) {
