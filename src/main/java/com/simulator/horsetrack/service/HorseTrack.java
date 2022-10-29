@@ -46,7 +46,7 @@ public class HorseTrack implements Simulator {
                 }
             }
         } catch (RuntimeException ex) {
-            System.err.println("Exception has occured "+ex);
+            System.err.println("Exception has occurred "+ex);
         }
     }
 
