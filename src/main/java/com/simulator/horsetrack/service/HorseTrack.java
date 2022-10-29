@@ -34,9 +34,9 @@ public class HorseTrack implements Simulator {
                 String userInput = scanner.nextLine();
                 String inputType = inputValidation(userInput);
                 if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
-                    setWinner(userInput);
+                    checkAndSetWinner(userInput);
                 } else if (InputTypes.WAGER.name().equalsIgnoreCase(inputType)) {
-                    setWagerBet(userInput);
+                    checkWager(userInput);
                 } else if (InputTypes.RESTOCK.name().equalsIgnoreCase(inputType)) {
                     reStock();
                 } else if (InputTypes.QUIT.name().equalsIgnoreCase(inputType)) {
@@ -54,18 +54,18 @@ public class HorseTrack implements Simulator {
         inventoryManagerService.restockInventory();
     }
 
-    private void setWagerBet(String userInput) {
+    private void checkWager(String userInput) {
         String[] userInputArray = userInput.split("\\s+", 2);
         if (Pattern.compile("[0-9]*['. '][0-9]*").matcher(userInputArray[1]).find()) {
             System.out.println("Invalid Bet: " + userInputArray[1]);
             return;
         }
-        if (verifyWinning(userInputArray[0])) {
+        if (checkWinner(userInputArray[0])) {
             calculateBetAmount(userInput);
         }
     }
 
-    private void setWinner(String userInput) {
+    private void checkAndSetWinner(String userInput) {
         int index = extractWinnerIndex(userInput);
         boolean isSuccessfully = winnerManager.setWinner(index);
         if (!isSuccessfully) {
@@ -73,7 +73,7 @@ public class HorseTrack implements Simulator {
         }
     }
 
-    private boolean verifyWinning(String betIndex) {
+    private boolean checkWinner(String betIndex) {
         String horseName = winnerManager.getHorseIndex().get(Integer.parseInt(betIndex.trim()));
         boolean matchBetweenBetAndWon = RaceResult.WON.getResult().equals(winnerManager.getWinnerStatus().get(horseName));
         if (!matchBetweenBetAndWon) {
