@@ -33,7 +33,6 @@ public class RaceService implements Simulator {
             while (true) {
                 displayInventoryAndWinner();
                 String userInput = scanner.nextLine();
-                System.out.println(userInput);
                 String inputType = inputValidation(userInput);
                 if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
                     setWinner(userInput);
