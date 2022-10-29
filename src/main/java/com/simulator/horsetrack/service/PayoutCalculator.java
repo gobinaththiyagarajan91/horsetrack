@@ -31,7 +31,7 @@ public class PayoutCalculator {
         Map<Integer, Integer> tempMap = new LinkedHashMap<>();
         tempMap.putAll(denominationInventory);
 
-        if (totalAmountAfterWin < getTotalInventoryCash()) {
+        if (totalAmountAfterWin <= getTotalInventoryCash()) {
             for (Map.Entry<Integer, Integer> a : sortedCashInventory.entrySet()) {
                 if (totalAmountAfterWin > 0) {
                     int temp = totalAmountAfterWin / a.getKey();
