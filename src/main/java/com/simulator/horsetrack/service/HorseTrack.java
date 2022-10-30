@@ -35,6 +35,7 @@ public class HorseTrack implements Simulator {
                 if (Objects.isNull(userInput) || userInput.trim().isEmpty()) {
                     continue;
                 }
+                userInput = userInput.trim();
                 String inputType = inputValidation(userInput);
                 if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
                     checkAndSetWinner(userInput);
@@ -50,6 +51,7 @@ public class HorseTrack implements Simulator {
             }
         } catch (RuntimeException ex) {
             System.err.println("Exception has occurred " + ex);
+            ex.printStackTrace();
         }
     }
 
@@ -134,7 +136,6 @@ public class HorseTrack implements Simulator {
     }
 
     private String inputValidation(String input) {
-        input = input.trim();
         if ("r".equalsIgnoreCase(input)) {
             return InputTypes.RESTOCK.name();
         } else if ("q".equalsIgnoreCase(input)) {
