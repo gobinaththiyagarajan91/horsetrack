@@ -87,6 +87,7 @@ public class HorseTrack implements Simulator {
         String[] userInputArray = userInput.split("\\s+", 2);
 
         Map<String, Integer> horseOdds = payoutCalculator.getHorseAndOdds();
+
         Map<Integer, Integer> denominationInventory = inventoryManagerService.getDenominationInventory();
 
         String horseBetName = winnerManager.getHorseIndex().get(Integer.parseInt(userInputArray[0].trim()));
