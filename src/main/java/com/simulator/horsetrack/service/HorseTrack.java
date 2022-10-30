@@ -32,6 +32,9 @@ public class HorseTrack implements Simulator {
             while (true) {
                 displayInventoryAndWinner();
                 String userInput = scanner.nextLine();
+                if (Objects.isNull(userInput) || userInput.trim().isEmpty()) {
+                   continue;
+                }
                 String inputType = inputValidation(userInput);
                 if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
                     checkAndSetWinner(userInput);
@@ -125,10 +128,6 @@ public class HorseTrack implements Simulator {
     }
 
     private String inputValidation(String input) {
-
-        if (Objects.isNull(input) || input.trim().isEmpty()) {
-            return "";
-        }
         input = input.trim();
         if ("r".equalsIgnoreCase(input)) {
             return InputTypes.RESTOCK.name();
