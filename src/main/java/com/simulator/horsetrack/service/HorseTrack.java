@@ -33,7 +33,7 @@ public class HorseTrack implements Simulator {
                 displayInventoryAndWinner();
                 String userInput = scanner.nextLine();
                 if (Objects.isNull(userInput) || userInput.trim().isEmpty()) {
-                   continue;
+                    continue;
                 }
                 String inputType = inputValidation(userInput);
                 if (InputTypes.WINNER.name().equalsIgnoreCase(inputType)) {
@@ -63,6 +63,11 @@ public class HorseTrack implements Simulator {
             System.out.println("Invalid Bet: " + userInputArray[1]);
             return;
         }
+
+        if (Integer.parseInt(userInputArray[0]) < 1 || Integer.parseInt(userInputArray[0]) > winnerManager.getHorseIndex().size()) {
+            System.out.println("Invalid Horse Number: " + userInputArray[0]);
+        }
+
         if (checkWinner(userInputArray[0])) {
             calculateBetAmount(userInput);
         }
