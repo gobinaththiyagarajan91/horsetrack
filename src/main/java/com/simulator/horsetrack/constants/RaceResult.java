@@ -5,13 +5,11 @@ public enum RaceResult {
 
     private String result;
 
-    public String getResult()
-    {
+    public String getResult() {
         return this.result;
     }
-    
-    private RaceResult(String action)
-    {
+
+    private RaceResult(String action) {
         this.result = action;
     }
 }
