@@ -66,6 +66,7 @@ public class HorseTrack implements Simulator {
 
         if (Integer.parseInt(userInputArray[0]) < 1 || Integer.parseInt(userInputArray[0]) > winnerManager.getHorseIndex().size()) {
             System.out.println("Invalid Horse Number: " + userInputArray[0]);
+            return;
         }
 
         if (checkWinner(userInputArray[0])) {
