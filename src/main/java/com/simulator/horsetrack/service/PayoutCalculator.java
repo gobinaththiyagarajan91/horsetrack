@@ -43,7 +43,8 @@ public class PayoutCalculator {
                         int key = a.getKey();
                         int value = a.getValue();
                         while (totalAmountAfterWin > key && value > 0) {
-                            denominationInventory.put(key, value--);
+                            value = value - 1;
+                            denominationInventory.put(key, value);
                             resultMap.put(key, resultMap.get(key) != null ? resultMap.get(key) + 1 : 1);
                             totalAmountAfterWin = totalAmountAfterWin - (key);
                         }
