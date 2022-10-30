@@ -61,7 +61,7 @@ public class HorseTrack implements Simulator {
 
     private void checkWager(String userInput) {
         String[] userInputArray = userInput.split("\\s+", 2);
-        if (Pattern.compile("[0-9]*['. '][0-9]*").matcher(userInputArray[1]).find()) {
+        if (Integer.parseInt(userInputArray[1]) < 1 || Pattern.compile("[0-9]*['. '][0-9]*").matcher(userInputArray[1]).find()) {
             System.out.println("Invalid Bet: " + userInputArray[1]);
             return;
         }
@@ -142,7 +142,7 @@ public class HorseTrack implements Simulator {
             return InputTypes.QUIT.name();
         } else if (Pattern.compile("w\\s+[0-9]+", Pattern.CASE_INSENSITIVE).matcher(input).matches()) {
             return InputTypes.WINNER.name();
-        } else if (Pattern.compile("[0-9]+\\s+[1-9]\\d*(\\.\\d+)?$").matcher(input).matches()) {
+        } else if (Pattern.compile("[0-9]+\\s+[0-9]\\d*(\\.\\d+)?$").matcher(input).matches()) {
             return InputTypes.WAGER.name();
         }
         return "";
